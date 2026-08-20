@@ -1,15 +1,25 @@
-module github.com/go-core-fx/template
+module github.com/005-bot/address-parser-go
 
-go 1.24.3
+go 1.25.7
 
 require (
 	github.com/go-core-fx/logger v0.0.1
+	github.com/hbollon/go-edlib v1.7.0
 	go.uber.org/fx v1.24.0
+	go.uber.org/zap v1.27.0
+	modernc.org/sqlite v1.53.0
 )
 
 require (
+	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/google/uuid v1.6.0 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/ncruces/go-strftime v1.0.0 // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	go.uber.org/dig v1.19.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/sys v0.44.0 // indirect
+	modernc.org/libc v1.73.4 // indirect
+	modernc.org/mathutil v1.7.1 // indirect
+	modernc.org/memory v1.11.0 // indirect
 )
