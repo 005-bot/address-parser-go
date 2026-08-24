@@ -125,7 +125,7 @@ func (p *Parser) Stop() {
 // Normalize matches rawInput against the street index and returns the best
 // match. Exact matches have confidence 1.0; otherwise a weighted blend of
 // Levenshtein similarity and LCS is used, requiring at least 0.6 confidence
-// and 0.4 LCS coverage of the stored name. Returns ErrNoMatch when nothing
+// and 0.4 LCS coverage of the input. Returns ErrNoMatch when nothing
 // scores high enough, or a context error when ctx is canceled.
 func (p *Parser) Normalize(ctx context.Context, rawInput string) (*Match, error) {
 	if err := ctx.Err(); err != nil {
@@ -179,13 +179,19 @@ func (p *Parser) fuzzyMatch(ctx context.Context, name string) *Match {
 		}
 
 		lcsLen := edlib.LCS(name, normName)
-		nameLen := utf8.RuneCountInString(normName)
+		inputLen := utf8.RuneCountInString(name)
 
-		if nameLen == 0 || float64(lcsLen)/float64(nameLen) < minCoverage {
+		// Coverage is normalized against the input length so a short input
+		// fully contained in a long stored name is not rejected (e.g. "мира"
+		// vs "проспект мира"). At least 2 common characters are required to
+		// reject single-rune inputs, which the confidence blend cannot
+		// discriminate (lcsScore of 1.0 pushes any single contained rune
+		// above the 0.6 threshold).
+		if inputLen < 2 || float64(lcsLen)/float64(inputLen) < minCoverage {
 			continue
 		}
 
-		lcsScore := float64(lcsLen) / float64(max(utf8.RuneCountInString(name), 1))
+		lcsScore := float64(lcsLen) / float64(inputLen)
 
 		confidence := float64(similarity)*ratioWeight + lcsScore*lcsWeight
 
